@@ -9,7 +9,7 @@
 //
 //************************************************************
 #include <easyMesh.h>
-
+#include <Ticker.h>
 // some gpio pin that is connected to an LED... 
 // on my rig, this is 5, change to the right number of your LED.
 #define   LED             5       // GPIO number of connected LED
@@ -22,12 +22,18 @@
 #define   MESH_PORT       5555
 
 easyMesh  mesh;
+Ticker meshUpdateTimer;
 
 uint32_t sendMessageTime = 0;
 
+void meshUpdate(){  
+  mesh.update();  //update mesh parameters 
+}
+
 void setup() {
   Serial.begin(115200);
-    
+  //call meshUpdate function every 3 sec 
+  meshUpdateTimer.attach(3,meshUpdate); //delay depends on how frequently nodes are moving   
   pinMode( LED, OUTPUT );
 
 //mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
@@ -41,8 +47,6 @@ void setup() {
 }
 
 void loop() {
-  mesh.update();
-
   // run the blinky
   bool  onFlag = false;
   uint32_t cycleTime = mesh.getNodeTime() % BLINK_PERIOD;
@@ -75,4 +79,3 @@ void receivedCallback( uint32_t from, String &msg ) {
 void newConnectionCallback( bool adopt ) {
   Serial.printf("startHere: New Connection, adopt=%d\n", adopt);
 }
-
