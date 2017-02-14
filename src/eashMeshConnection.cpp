@@ -281,7 +281,7 @@ void ICACHE_FLASH_ATTR easyMesh::meshRecvCb(void *arg, char *data, unsigned shor
         return;
     }
 
-    String justCopy(data);   //just copy data before parsing json object and it is working now
+
     
     DynamicJsonBuffer jsonBuffer( JSON_BUFSIZE );
     JsonObject& root = jsonBuffer.parseObject( data );
